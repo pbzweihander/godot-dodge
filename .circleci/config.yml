@@ -1,0 +1,25 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: 999eagle/docker-godot-mono
+    steps:
+      - checkout:
+          path: /project
+      - run: |
+          mkdir /exports
+      - run: |
+          /build/godot --path /project --export "Linux/X11" /exports/dodge
+      - run: |
+          tar czf /exports/linux-x11.tar.gz /exports/dodge /exports/dodge.pck &&\
+          rm /exports/dodge /exports/dodge.pck
+      - store_artifacts:
+          path: /exports
+          destination: .
+
+workflows:
+  version: 2
+  flow:
+    jobs:
+      - build
